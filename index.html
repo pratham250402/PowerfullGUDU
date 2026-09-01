@@ -254,11 +254,38 @@
   }
   @media (max-width: 640px){ .card-grid{ grid-template-columns: 1fr; } }
   .strength-card{
+    perspective: 1000px;
+    height: 190px;
+  }
+  .card-inner{
+    position:relative; width:100%; height:100%;
+    transform-style: preserve-3d;
+    transition: transform .7s cubic-bezier(.25,.9,.3,1);
+    cursor:pointer;
+  }
+  .strength-card.flipped .card-inner{ transform: rotateY(180deg); }
+  .card-face{
+    position:absolute; inset:0;
+    backface-visibility:hidden;
     border: 1px solid rgba(36,31,56,0.1);
     border-radius: 4px;
     padding: 1.7rem 1.6rem;
-    background: #fff;
+    display:flex; flex-direction:column;
+    justify-content:center;
   }
+  .card-front{ background:#fff; }
+  .card-front .hint{
+    margin-top:auto;
+    font-size: 0.78rem;
+    color: var(--dawn);
+    opacity:0.75;
+  }
+  .card-back{
+    background: linear-gradient(135deg, var(--dawn), var(--rose));
+    transform: rotateY(180deg);
+    color:#fff;
+  }
+  .card-back p{ color:#fff; font-style:italic; font-family:'Fraunces', serif; font-size:1.05rem; line-height:1.55; }
   .strength-card h3{
     font-size: 1.15rem;
     font-weight:600;
@@ -318,30 +345,188 @@
     outline: 2px solid var(--gold); outline-offset: 3px;
   }
 
-  /* ---------- LETTER ---------- */
-  .letter{
-    background: var(--cream);
+  /* ---------- RELEASE RITUAL ---------- */
+  .release{
+    background: linear-gradient(180deg, var(--night), var(--night-2));
+    color:#fff;
+    max-width:none;
+    padding: 7rem 6vw;
+    text-align:center;
+    position:relative;
+    overflow:hidden;
   }
-  .letter-box{
-    margin-top: 2.4rem;
-    padding: 2.6rem 2.4rem;
+  .release .tag{ background: rgba(243,194,107,0.15); color: var(--gold); }
+  .release-inner{ max-width: 560px; margin: 0 auto; position:relative; z-index:2; }
+  .release .lede{ margin:0 auto; color:#fff; }
+  .release-form{
+    margin-top: 2.2rem;
+    display:flex;
+    gap: 0.7rem;
+    flex-wrap:wrap;
+    justify-content:center;
+  }
+  #release-input{
+    flex:1 1 280px;
+    min-width: 0;
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.22);
+    border-radius: 100px;
+    padding: 0.85rem 1.3rem;
+    color:#fff;
+    font-family:'Work Sans', sans-serif;
+    font-size: 0.95rem;
+  }
+  #release-input::placeholder{ color: rgba(255,255,255,0.45); }
+  #release-input:focus{ outline:none; border-color: var(--gold); }
+  .release-note{
+    margin-top: 1.4rem;
+    font-size: 0.85rem;
+    color: rgba(255,255,255,0.4);
+    min-height: 1.2em;
+    transition: opacity .4s ease;
+  }
+  .lantern-layer{ position:absolute; inset:0; overflow:hidden; pointer-events:none; }
+  .lantern{
+    position:absolute;
+    bottom: -60px;
+    left: 50%;
+    transform: translateX(-50%);
+    display:flex; flex-direction:column; align-items:center;
+    animation: float-up 5.5s ease-in forwards;
+  }
+  .lantern-body{
+    width: 46px; height: 58px;
+    border-radius: 8px 8px 16px 16px;
+    background: radial-gradient(circle at 50% 35%, var(--gold), var(--sunrise) 70%);
+    box-shadow: 0 0 24px 6px rgba(243,194,107,0.55);
+  }
+  .lantern-text{
+    max-width: 130px;
+    margin-top: 0.5rem;
+    font-size: 0.72rem;
+    color: rgba(255,255,255,0.65);
+    text-align:center;
+    font-style:italic;
+    font-family:'Fraunces', serif;
+  }
+  @keyframes float-up{
+    0%{ bottom:-60px; opacity:0; }
+    12%{ opacity:1; }
+    85%{ opacity:1; }
+    100%{ bottom: 108%; opacity:0; transform: translateX(calc(-50% + var(--drift, 20px))); }
+  }
+
+  /* ---------- LETTER / ENVELOPE ---------- */
+  .letter{ background: var(--cream); }
+  .envelope-wrap{
+    margin-top: 2.6rem;
+    perspective: 1400px;
+    display:flex;
+    justify-content:center;
+  }
+  .envelope{
+    position:relative;
+    width: 100%;
+    max-width: 420px;
+    cursor:pointer;
+  }
+  .envelope-tap{
+    text-align:center;
+    font-size: 0.82rem;
+    color: var(--dawn);
+    margin-top: 0.9rem;
+    opacity: 0.85;
+    transition: opacity .3s ease;
+  }
+  .envelope.open .envelope-tap{ opacity:0; height:0; margin:0; }
+  .envelope-body{
+    position:relative;
+    height: 230px;
     background: #fff;
-    border-left: 3px solid var(--rose);
-    border-radius: 2px;
-    box-shadow: 0 20px 50px -30px rgba(36,31,56,0.25);
+    border: 1px solid rgba(36,31,56,0.12);
+    border-radius: 4px;
+    box-shadow: 0 25px 55px -30px rgba(36,31,56,0.4);
+    overflow:hidden;
   }
-  .letter-box p{
-    font-size: 1.03rem;
-    line-height: 1.85;
+  .envelope-flap{
+    position:absolute; top:0; left:0; right:0; height:0;
+    border-left: 210px solid transparent;
+    border-right: 210px solid transparent;
+    border-top: 115px solid var(--rose);
+    transform-origin: top center;
+    transition: transform .8s cubic-bezier(.3,.9,.3,1);
+    z-index:3;
+  }
+  .envelope.open .envelope-flap{ transform: rotateX(180deg); }
+  .envelope-seal{
+    position:absolute; top: 88px; left:50%; transform:translateX(-50%);
+    width: 46px; height:46px; border-radius:50%;
+    background: radial-gradient(circle at 35% 30%, var(--sunrise), #c4551f 75%);
+    box-shadow: 0 6px 14px rgba(0,0,0,0.3);
+    z-index:4;
+    display:flex; align-items:center; justify-content:center;
+    color:#fff; font-family:'Fraunces', serif; font-style:italic; font-size:1.1rem;
+    transition: opacity .35s ease, transform .35s ease;
+  }
+  .envelope.open .envelope-seal{ opacity:0; transform:translateX(-50%) scale(0.4); }
+  .letter-paper{
+    position:absolute; left:5%; right:5%; bottom:8px;
+    background:#fff;
+    border-top: 3px solid var(--rose);
+    border-radius: 2px 2px 0 0;
+    padding: 1.6rem 1.5rem 1.2rem;
+    box-shadow: 0 -8px 24px rgba(36,31,56,0.08);
+    transform: translateY(6px);
+    transition: transform .9s cubic-bezier(.22,.9,.32,1) .3s;
+    z-index:2;
+    max-height: 60px;
+    overflow:hidden;
+  }
+  .envelope.open .letter-paper{
+    transform: translateY(-330px);
+    max-height: 900px;
+  }
+  .letter-paper p{
+    font-size: 0.98rem;
+    line-height: 1.8;
     color: var(--ink);
-    margin-bottom: 1.1rem;
+    margin-bottom: 1rem;
   }
   .signature{
-    margin-top: 1.6rem;
+    margin-top: 0.4rem;
     font-family:'Fraunces', serif;
     font-style:italic;
-    font-size: 1.2rem;
+    font-size: 1.15rem;
     color: var(--dawn);
+  }
+
+  /* ---------- SCROLL PROGRESS ---------- */
+  .progress-rail{
+    position:fixed;
+    right: 18px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 3px;
+    height: 140px;
+    background: rgba(36,31,56,0.1);
+    border-radius: 3px;
+    z-index: 500;
+  }
+  @media (max-width: 640px){ .progress-rail{ display:none; } }
+  .progress-fill{
+    position:absolute; bottom:0; left:0; width:100%;
+    height:0%;
+    background: linear-gradient(180deg, var(--gold), var(--dawn));
+    border-radius:3px;
+    transition: height .15s linear;
+  }
+  .progress-sun{
+    position:absolute; left:50%; bottom:0%;
+    width:9px; height:9px; border-radius:50%;
+    background: var(--gold);
+    box-shadow: 0 0 10px 2px rgba(243,194,107,0.6);
+    transform: translate(-50%, 50%);
+    transition: bottom .15s linear;
   }
 
   /* ---------- CLOSING ---------- */
@@ -408,20 +593,52 @@
   <p class="lede">Everything he never<br>fully saw in you</p>
   <div class="card-grid">
     <div class="strength-card">
-      <h3>Your warmth</h3>
-      <p>You have a way of making the people around you feel noticed. That's rare. It didn't come from him, and it hasn't gone anywhere.</p>
+      <div class="card-inner">
+        <div class="card-face card-front">
+          <h3>Your warmth</h3>
+          <p>You have a way of making the people around you feel noticed. That's rare.</p>
+          <span class="hint">tap to reveal</span>
+        </div>
+        <div class="card-face card-back">
+          <p>It didn't come from him, and it hasn't gone anywhere. Everyone who's ever felt comfortable around you — that was you, not him.</p>
+        </div>
+      </div>
     </div>
     <div class="strength-card">
-      <h3>Your strength</h3>
-      <p>You're sitting with something painful right now instead of running from it. That takes more courage than most people ever show.</p>
+      <div class="card-inner">
+        <div class="card-face card-front">
+          <h3>Your strength</h3>
+          <p>You're sitting with something painful instead of running from it.</p>
+          <span class="hint">tap to reveal</span>
+        </div>
+        <div class="card-face card-back">
+          <p>That takes more courage than most people ever show. You're already doing the hard part. It gets lighter from here.</p>
+        </div>
+      </div>
     </div>
     <div class="strength-card">
-      <h3>Your standards</h3>
-      <p>Wanting to be chosen fully, and not settling for less, isn't "too much." It's self-respect — and it will take you somewhere better.</p>
+      <div class="card-inner">
+        <div class="card-face card-front">
+          <h3>Your standards</h3>
+          <p>Wanting to be chosen fully, and not settling for less, isn't "too much."</p>
+          <span class="hint">tap to reveal</span>
+        </div>
+        <div class="card-face card-back">
+          <p>It's self-respect. The version of you that walks away from less is the same one who'll recognize more, when it comes.</p>
+        </div>
+      </div>
     </div>
     <div class="strength-card">
-      <h3>Your future</h3>
-      <p>One chapter closing doesn't erase everything you're still building — your goals, your people, your own version of a good life.</p>
+      <div class="card-inner">
+        <div class="card-face card-front">
+          <h3>Your future</h3>
+          <p>One chapter closing doesn't erase everything you're still building.</p>
+          <span class="hint">tap to reveal</span>
+        </div>
+        <div class="card-face card-back">
+          <p>Your goals, your people, your own version of a good life — none of that left with him. It's all still yours to grow.</p>
+        </div>
+      </div>
     </div>
   </div>
 </section>
@@ -437,16 +654,44 @@
   </div>
 </section>
 
+<section class="release">
+  <div class="lantern-layer" id="lanternLayer"></div>
+  <div class="release-inner">
+    <span class="tag">a small ritual</span>
+    <p class="lede">Let something go, tonight</p>
+    <p class="body-text" style="color:rgba(255,255,255,0.65); margin: 1.2rem auto 0; text-align:center;">Type one thing you're ready to stop carrying — a thought, a memory, a "what if." Send it up, and let it go.</p>
+    <form class="release-form" id="release-form">
+      <input type="text" id="release-input" maxlength="60" placeholder="the thing I'm letting go of is..." autocomplete="off">
+      <button class="affirm-btn" type="submit">Release it</button>
+    </form>
+    <p class="release-note" id="release-note"></p>
+  </div>
+</section>
+
 <section class="letter">
   <span class="tag">from your friend</span>
   <p class="lede">One more thing, before you go</p>
-  <div class="letter-box">
-    <p>Priyanshi, I made this because I wanted you to have somewhere to come back to on the days it feels heavy — a reminder that doesn't get lost in messages or forgotten by morning.</p>
-    <p>You are not behind. You are not broken. You are not "too much" or "not enough." You're just in the part of the story where it hurts, right before the part where you look back and realize how strong you had to become.</p>
-    <p>I'm proud of you. Not for the breakup — for everything you are outside of it.</p>
-    <p class="signature">Always in your corner.</p>
+  <div class="envelope-wrap">
+    <div class="envelope" id="envelope">
+      <div class="envelope-body">
+        <div class="envelope-flap"></div>
+        <div class="envelope-seal">P</div>
+        <div class="letter-paper">
+          <p>Priyanshi, I made this because I wanted you to have somewhere to come back to on the days it feels heavy — a reminder that doesn't get lost in messages or forgotten by morning.</p>
+          <p>You are not behind. You are not broken. You are not "too much" or "not enough." You're just in the part of the story where it hurts, right before the part where you look back and realize how strong you had to become.</p>
+          <p>I'm proud of you. Not for the breakup — for everything you are outside of it.</p>
+          <p class="signature">Always in your corner.</p>
+        </div>
+      </div>
+      <p class="envelope-tap" id="envelopeTap">tap the seal to open</p>
+    </div>
   </div>
 </section>
+
+<div class="progress-rail" id="progressRail">
+  <div class="progress-fill" id="progressFill"></div>
+  <div class="progress-sun" id="progressSun"></div>
+</div>
 
 <section class="closing">
   <h2>You didn't lose him.<br>You're <em>finding you.</em></h2>
@@ -538,6 +783,61 @@
       textEl.style.opacity = 1;
     }, 350);
   });
+
+  // flip cards
+  document.querySelectorAll('.strength-card').forEach(card => {
+    card.addEventListener('click', () => card.classList.toggle('flipped'));
+  });
+
+  // release ritual — type something, watch it float away as a lantern
+  const releaseForm = document.getElementById('release-form');
+  const releaseInput = document.getElementById('release-input');
+  const releaseNote = document.getElementById('release-note');
+  const lanternLayer = document.getElementById('lanternLayer');
+  const releaseResponses = [
+    "Let it go. You don't have to carry that into tomorrow.",
+    "Released. That's one less thing weighing you down.",
+    "Gone. You get to decide what you hold onto from here.",
+    "It's lifted. Let the rest of tonight feel a little lighter."
+  ];
+  releaseForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const val = releaseInput.value.trim();
+    if(!val) return;
+    const lantern = document.createElement('div');
+    lantern.className = 'lantern';
+    lantern.style.setProperty('--drift', (Math.random()*120 - 60)+'px');
+    lantern.style.left = (45 + Math.random()*10)+'%';
+    lantern.innerHTML = '<div class="lantern-body"></div><div class="lantern-text">' +
+      val.replace(/</g,'&lt;').replace(/>/g,'&gt;') + '</div>';
+    lanternLayer.appendChild(lantern);
+    setTimeout(() => lantern.remove(), 6000);
+    releaseNote.style.opacity = 0;
+    setTimeout(() => {
+      releaseNote.textContent = releaseResponses[Math.floor(Math.random()*releaseResponses.length)];
+      releaseNote.style.opacity = 1;
+    }, 200);
+    releaseInput.value = '';
+  });
+
+  // envelope open
+  const envelope = document.getElementById('envelope');
+  envelope.addEventListener('click', () => {
+    envelope.classList.toggle('open');
+  });
+
+  // scroll progress sun
+  const progressFill = document.getElementById('progressFill');
+  const progressSun = document.getElementById('progressSun');
+  function updateProgress(){
+    const scrollTop = window.scrollY;
+    const max = document.documentElement.scrollHeight - window.innerHeight;
+    const pct = max > 0 ? Math.min(100, Math.max(0, (scrollTop/max)*100)) : 0;
+    progressFill.style.height = pct + '%';
+    progressSun.style.bottom = pct + '%';
+  }
+  window.addEventListener('scroll', updateProgress, { passive:true });
+  updateProgress();
 </script>
 
 </body>
